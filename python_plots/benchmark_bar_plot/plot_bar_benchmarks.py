@@ -58,7 +58,7 @@ RESULTS = [
      {("same","same"): 42.7, ("same","cross"): 51.5,
       ("cross","same"): 27.1, ("cross","cross"): 24.0}),
 
-    ("Qwen2.5-VL-3B\nFT w/o expert",       "vlm-ft",
+    ("Qwen2.5-VL-3B\nFT w/o expert",       "vlm-ft-plain",
      {("same","same"): 90.7, ("same","cross"): 96.0,
       ("cross","same"): 79.2, ("cross","cross"): 77.3}),
 
@@ -71,10 +71,10 @@ RESULTS = [
       ("cross","same"): 68.8, ("cross","cross"): 75.3}),
 
     ("Qwen2.5-VL-3B\nFT w/ v03_23_token",  "vlm-ft",
-     {("same","same"): 76.0, ("same","cross"): 86.9,
-      ("cross","same"): 81.3, ("cross","cross"): 81.3}),
+     {("same","same"): 86.7, ("same","cross"): 96.0,
+      ("cross","same"): 79.2, ("cross","cross"): 83.3}),
 
-    ("Qwen2.5-VL-7B\nFT w/o expert",       "vlm-ft",
+    ("Qwen2.5-VL-7B\nFT w/o expert",       "vlm-ft-plain",
      {("same","same"): 82.7, ("same","cross"): 95.0,
       ("cross","same"): 75.0, ("cross","cross"): 41.3}),
 ]
@@ -83,19 +83,22 @@ RESULTS = [
 # Color per category
 # ─────────────────────────────────────────────
 CATEGORY_COLORS = {
-    "embedding": "#2E86C1",   # strong blue
-    "vlm":       "#E67E22",   # orange
-    "vlm-ft":    "#27AE60",   # green (hatched)
+    "embedding":  "#2E86C1",   # strong blue
+    "vlm":        "#E67E22",   # orange
+    "vlm-ft":     "#27AE60",   # green (hatched)
+    "vlm-ft-plain": "#27AE60", # green (no hatch)
 }
 CATEGORY_ALPHA = {
-    "embedding": 0.85,
-    "vlm":       0.85,
-    "vlm-ft":    0.85,
+    "embedding":  0.85,
+    "vlm":        0.85,
+    "vlm-ft":     0.85,
+    "vlm-ft-plain": 0.85,
 }
 CATEGORY_HATCH = {
-    "embedding": None,
-    "vlm":       None,
-    "vlm-ft":    "//",
+    "embedding":  None,
+    "vlm":        None,
+    "vlm-ft":     "//",
+    "vlm-ft-plain": None,
 }
 
 # Per-subplot overrides: ensure model A appears immediately before model B after sorting
@@ -122,9 +125,12 @@ legend_handles = [
                    label="Embedding-based"),
     mpatches.Patch(color=CATEGORY_COLORS["vlm"],       alpha=CATEGORY_ALPHA["vlm"],
                    label="VLM-based (zero-shot)"),
+    mpatches.Patch(facecolor=CATEGORY_COLORS["vlm-ft-plain"], alpha=CATEGORY_ALPHA["vlm-ft-plain"],
+                   edgecolor="black",
+                   label="VLM-based (FT w/o expert, ours)"),
     mpatches.Patch(facecolor=CATEGORY_COLORS["vlm-ft"], alpha=CATEGORY_ALPHA["vlm-ft"],
                    hatch=CATEGORY_HATCH["vlm-ft"],     edgecolor="black",
-                   label="VLM-based (fine-tuned, ours)"),
+                   label="VLM-based (FT w/ expert, ours)"),
 ]
 
 FILENAMES = {
@@ -178,7 +184,7 @@ for (_, __), (clothes, camera, title) in SUBPLOTS.items():
     ax.set_axisbelow(True)
     ax.spines[["top", "right"]].set_visible(False)
 
-    ax.legend(handles=legend_handles, fontsize=18, frameon=True, loc="upper right")
+    ax.legend(handles=legend_handles, fontsize=18, frameon=True, loc="upper right", bbox_to_anchor=(1.0, 1.08))
 
     plt.tight_layout()
     fname = FILENAMES[(clothes, camera)]

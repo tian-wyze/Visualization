@@ -10,7 +10,9 @@ from PIL import Image
 DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH   = os.path.join(DIR, "cropped_crossclothes_family_crosscamera.json")
 CSV_GEMINI  = os.path.join(DIR, "predictions_gemini_gemini-2.5-pro_cropped_crossclothes_family_crosscamera.csv")
-CSV_SFT     = os.path.join(DIR, "predictions_sft-qwen3b-noexpert_cropped_crossclothes_family_crosscamera.csv")
+# CSV_SFT     = os.path.join(DIR, "predictions_sft-qwen3b-noexpert_cropped_crossclothes_family_crosscamera.csv")
+CSV_SFT     = os.path.join(DIR, "predictions_sft-qwen3b-WYZEv03_23_token_cropped_crossclothes_family_crosscamera.csv")
+
 _json_stem  = os.path.splitext(os.path.basename(JSON_PATH))[0]  # cropped_crossclothes_family_crosscamera
 _case_name  = _json_stem.replace("cropped_", "")                # crossclothes_family_crosscamera
 OUT_DIR     = os.path.join(DIR, f"examples_{_case_name}")
