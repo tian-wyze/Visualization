@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Inspector</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<div id="header">
+  <h1>Model Inspector</h1>
+  <div id="header-spacer"></div>
+  <button id="toggle-panel-btn">Hide Upload</button>
+</div>
+
+<!-- ── Upload Panel ─────────────────────────────────────────────────────────── -->
+<div id="upload-panel">
+
+  <!-- Benchmarks -->
+  <div class="upload-section" style="flex:1;min-width:300px;max-width:500px">
+    <h3>1 · Benchmarks</h3>
+    <div id="benchmark-list"></div>
+    <div class="drop-zone" id="benchmark-zone">
+      <input type="file" id="benchmark-input" accept=".json">
+      <div class="dz-icon">📂</div>
+      <div class="dz-label">Add benchmark JSON</div>
+      <div class="dz-sub">click or drag &amp; drop</div>
+    </div>
+    <div class="path-row">
+      <span class="or-label">or server path</span>
+      <input type="text" class="path-input" id="benchmark-path-input"
+             placeholder="/path/to/benchmark.json  or  /path/to/folder/"
+             autocomplete="off" spellcheck="false">
+      <button class="btn btn-secondary btn-sm" id="benchmark-path-btn">Load</button>
+    </div>
+  </div>
+
+  <!-- Models -->
+  <div class="upload-section" style="flex:1;min-width:300px">
+    <h3>2 · Model Predictions</h3>
+    <div id="model-list">
+      <div style="font-size:12px;color:var(--text-muted)">No models loaded yet.</div>
+    </div>
+    <button class="btn btn-secondary btn-sm" id="show-add-model-btn" style="margin-top:6px;align-self:flex-start">
+      + Add Model
+    </button>
+
+    <!-- Add Model Form -->
+    <div id="add-model-form" class="hidden">
+      <input type="text" id="model-name-input" placeholder="Model name (e.g. Gemini 2.5 Pro)" autocomplete="off">
+      <div class="drop-zone" id="model-drop-zone" style="min-width:unset">
+        <input type="file" id="model-csv-input" accept=".csv">
+        <div class="dz-icon">📊</div>
+        <div class="dz-label">Drop predictions CSV</div>
+        <div class="dz-sub">columns: idx, label, prediction</div>
+      </div>
+      <div class="path-row">
+        <span class="or-label">or server path</span>
+        <input type="text" class="path-input" id="model-path-input"
+               placeholder="/path/to/predictions.csv  or  /path/to/folder/"
+               autocomplete="off" spellcheck="false">
+      </div>
+      <!-- Benchmark assignment (auto-detected, overridable) -->
+      <div class="form-row" style="align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">Benchmark</span>
+        <select id="model-benchmark-select" class="ctrl-select" style="flex:1"></select>
+      </div>
+      <div id="model-bk-detect" style="font-size:11px;color:var(--text-muted);min-height:14px"></div>
+      <div class="form-row">
+        <button class="btn btn-primary btn-sm" id="submit-add-model">Add Model</button>
+        <button class="btn btn-secondary btn-sm" id="cancel-add-model">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Benchmark Bar ─────────────────────────────────────────────────────────── -->
+<div id="benchmark-bar" class="hidden"></div>
+
+<!-- ── Tab Bar ──────────────────────────────────────────────────────────────── -->
+<div id="tab-bar"></div>
+
+<!-- ── Controls ─────────────────────────────────────────────────────────────── -->
+<div id="controls" class="hidden"></div>
+
+<!-- ── Status Bar ───────────────────────────────────────────────────────────── -->
+<div id="status-bar" class="hidden">
+  <span id="case-count"></span>
+  <div id="pagination"></div>
+</div>
+
+<!-- ── Loading ──────────────────────────────────────────────────────────────── -->
+<div id="loading-cases" class="hidden">
+  <div class="spinner"></div>
+  <span>Loading cases…</span>
+</div>
+
+<!-- ── Empty State ──────────────────────────────────────────────────────────── -->
+<div id="empty-state">
+  <div class="empty-icon">🔬</div>
+  <h2>Model Inspector</h2>
+  <p>Upload a benchmark JSON and one or more model prediction CSVs to begin diagnosing failure cases.</p>
+  <p style="font-size:12px;color:var(--text-muted);margin-top:8px">
+    JSON must have an <code>eval_cases</code> key.<br>
+    CSVs must have <code>idx</code>, <code>label</code>, <code>prediction</code> columns.
+  </p>
+</div>
+
+<!-- ── Cases ────────────────────────────────────────────────────────────────── -->
+<div id="cases"></div>
+
+<!-- ── Zoom Modal ────────────────────────────────────────────────────────────── -->
+<div id="zoom-modal" class="hidden" onclick="if(event.target===this)closeZoom()">
+  <div id="zoom-dialog">
+    <div id="zoom-titlebar">
+      <div id="zoom-header"></div>
+      <button id="zoom-close" onclick="closeZoom()" title="Close (Esc)">✕</button>
+    </div>
+    <div id="zoom-body"></div>
+  </div>
+</div>
+
+<!-- ── Toast Container ──────────────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
