@@ -196,15 +196,13 @@ function renderBenchmarkList() {
 function renderBenchmarkBar() {
   const bks = Object.keys(S.benchmarks);
   $('benchmark-bar').classList.toggle('hidden', bks.length === 0);
-  $('benchmark-bar').innerHTML = bks.map(bk => {
+  const options = bks.map(bk => {
     const info = S.benchmarks[bk];
-    return `
-      <div class="benchmark-tab ${bk === S.activeBenchmark ? 'active' : ''}"
-           onclick="switchBenchmark('${escAttr(bk)}')" title="${escAttr(bk)}">
-        ${escHtml(bk)}
-        <span class="bk-count-badge">${info.numCases}</span>
-      </div>`;
+    return `<option value="${escAttr(bk)}" ${bk === S.activeBenchmark ? 'selected' : ''}>${escHtml(bk)} (${info.numCases} cases)</option>`;
   }).join('');
+  $('benchmark-bar').innerHTML = `
+    <span class="bk-bar-label">Benchmark</span>
+    <select class="bk-dropdown" onchange="switchBenchmark(this.value)">${options}</select>`;
 }
 
 function switchBenchmark(bk) {
@@ -214,6 +212,8 @@ function switchBenchmark(bk) {
   S.compareM1  = null;
   S.compareM2  = null;
   S.page       = 0;
+  localStorage.setItem('activeBenchmark', bk);
+  localStorage.removeItem('activeTab');
   renderBenchmarkList();
   renderBenchmarkBar();
   renderModels();
@@ -456,6 +456,7 @@ function renderTabs() {
 function switchTab(tab) {
   S.activeTab = tab;
   S.page = 0;
+  localStorage.setItem('activeTab', tab);
   renderTabs();
   renderControls();
   loadCases();
@@ -765,9 +766,23 @@ async function initFromServer() {
     renderBenchmarkBar();
     updateModelBenchmarkSelect();
 
-    // Switch to first benchmark and its top model
-    S.activeBenchmark = Object.keys(S.benchmarks)[0];
+    // Restore last active benchmark (fall back to first)
+    const savedBk  = localStorage.getItem('activeBenchmark');
+    const savedTab = localStorage.getItem('activeTab');
+    S.activeBenchmark = (savedBk && S.benchmarks[savedBk]) ? savedBk : Object.keys(S.benchmarks)[0];
+
     renderModels();
+    renderTabs();
+
+    // Restore last active tab (fall back to top model)
+    const models = activeBenchmarkModels();
+    const modelNames = Object.keys(models);
+    if (savedTab && (savedTab === '__compare__' ? modelNames.length >= 2 : models[savedTab])) {
+      S.activeTab = savedTab;
+    } else if (modelNames.length) {
+      S.activeTab = Object.entries(models).sort(([,a],[,b]) => b.accuracy - a.accuracy)[0][0];
+    }
+
     renderTabs();
     renderEmptyOrCases();
   } catch (e) {
