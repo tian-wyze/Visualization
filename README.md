@@ -57,7 +57,7 @@ Visualization/
 │       ├── *.json                   ← Benchmark files (input data)
 │       └── *.csv                    ← Prediction files (input data)
 │
-└── webapp/                          ← The web application (this project)
+└── model_inspector/                          ← The web application (this project)
     ├── app.py                       ← Flask backend server
     ├── requirements.txt             ← Python dependencies
     ├── .saved_paths.json            ← Auto-generated; persists loaded file paths across restarts
@@ -68,7 +68,7 @@ Visualization/
         └── app.js                   ← All frontend logic (state, rendering, API calls)
 ```
 
-> **Convention:** `python_plots/` is kept strictly for static Python scripts. All web app code lives under `webapp/`. `.saved_paths.json` is auto-generated and git-ignored.
+> **Convention:** `python_plots/` is kept strictly for static Python scripts. All web app code lives under `model_inspector/`. `.saved_paths.json` is auto-generated and git-ignored.
 
 ---
 
@@ -109,7 +109,7 @@ conda activate visualization
 
 ```bash
 conda activate <your-env>
-pip install -r Visualization/webapp/requirements.txt
+pip install -r Visualization/model_inspector/requirements.txt
 ```
 
 ### Verify the installation
@@ -217,8 +217,8 @@ If the filename doesn't follow this convention, you can manually enter the model
 ## 6. Running the App
 
 ```bash
-# 1. Navigate to the webapp directory
-cd /path/to/Visualization/webapp
+# 1. Navigate to the model_inspector directory
+cd /path/to/Visualization/model_inspector
 
 # 2. Activate the environment
 conda activate visualization
@@ -400,7 +400,7 @@ Local filesystem (images, JSON, CSV)
 
 ### 8.1 Backend (Flask)
 
-**File:** `webapp/app.py`
+**File:** `model_inspector/app.py`
 
 All runtime state lives in a single module-level dict:
 
@@ -461,7 +461,7 @@ Written on every `load_*_path` call; read at server startup by `_auto_load()`.
 
 ### 8.2 Frontend (Vanilla JS)
 
-**Files:** `webapp/static/app.js`, `webapp/static/style.css`, `webapp/templates/index.html`
+**Files:** `model_inspector/static/app.js`, `model_inspector/static/style.css`, `model_inspector/templates/index.html`
 
 No framework, no build step. The frontend is organized around a single global state object `S`:
 
