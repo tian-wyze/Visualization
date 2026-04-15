@@ -35,7 +35,7 @@ function enc(s)        { return encodeURIComponent(s); }
 function escHtml(s)    { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function escAttr(s)    { return String(s).replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-function shortBk(bk)   { return bk.length > 42 ? bk.slice(0, 39) + '…' : bk; }
+function shortBk(bk)   { return bk.length > 60 ? bk.slice(0, 57) + '…' : bk; }
 
 /** Client-side benchmark detection from a filename — mirrors backend logic.
  *  Splits at the first underscore after "predictions_", so it works even

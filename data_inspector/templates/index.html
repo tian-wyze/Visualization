@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Inspector</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<div id="header">
+  <h1>Data Inspector</h1>
+  <div id="header-spacer"></div>
+  <button id="toggle-panel-btn">Hide Upload</button>
+</div>
+
+<!-- ── Upload Panel ─────────────────────────────────────────────────────────── -->
+<div id="upload-panel">
+  <div class="upload-section" style="flex:1;min-width:300px;max-width:540px">
+    <h3>Gallery JSON Files</h3>
+    <div id="gallery-list"></div>
+    <div class="drop-zone" id="gallery-zone">
+      <input type="file" id="gallery-input" accept=".json">
+      <div class="dz-icon">📂</div>
+      <div class="dz-label">Add household gallery JSON</div>
+      <div class="dz-sub">click or drag &amp; drop</div>
+    </div>
+    <div class="path-row">
+      <span class="or-label">or server path</span>
+      <input type="text" class="path-input" id="gallery-path-input"
+             placeholder="/path/to/household_info.json  or  /path/to/folder/"
+             autocomplete="off" spellcheck="false">
+      <button class="btn btn-secondary btn-sm" id="gallery-path-btn">Load</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Gallery Tab Bar ──────────────────────────────────────────────────────── -->
+<div id="gallery-bar" class="hidden"></div>
+
+<!-- ── Stats Bar ────────────────────────────────────────────────────────────── -->
+<div id="stats-bar" class="hidden"></div>
+
+<!-- ── Controls Bar ─────────────────────────────────────────────────────────── -->
+<div id="controls" class="hidden">
+  <div class="filter-group">
+    <span class="filter-label">Household</span>
+    <select id="household-select" class="ctrl-select">
+      <option value="">All households</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">HH size</span>
+    <select id="hh-size-select" class="ctrl-select">
+      <option value="">Any size</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Search</span>
+    <input type="text" id="search-input" class="search-input"
+           placeholder="Identity or household ID…"
+           autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Sort</span>
+    <select id="sort-select" class="ctrl-select">
+      <option value="household">By household</option>
+      <option value="identity">By identity ID</option>
+      <option value="images_desc">Most images first</option>
+      <option value="images_asc">Fewest images first</option>
+    </select>
+  </div>
+  <div class="filter-group" style="margin-left:auto">
+    <span class="filter-label">Per page</span>
+    <select id="page-size-select" class="ctrl-select">
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+    </select>
+  </div>
+</div>
+
+<!-- ── Status Bar ───────────────────────────────────────────────────────────── -->
+<div id="status-bar" class="hidden">
+  <span id="case-count"></span>
+  <div id="pagination"></div>
+</div>
+
+<!-- ── Loading ──────────────────────────────────────────────────────────────── -->
+<div id="loading-cases" class="hidden">
+  <div class="spinner"></div>
+  <span>Loading identities…</span>
+</div>
+
+<!-- ── Empty State ──────────────────────────────────────────────────────────── -->
+<div id="empty-state">
+  <div class="empty-icon">🔍</div>
+  <h2>Data Inspector</h2>
+  <p>Upload a household gallery JSON to browse and inspect identity images.</p>
+  <p style="font-size:12px;color:var(--text-muted);margin-top:8px">
+    JSON structure: <code>household_id → identity_id → mac_addr → [image_paths]</code>
+  </p>
+</div>
+
+<!-- ── Identity Cards ────────────────────────────────────────────────────────── -->
+<div id="identities"></div>
+
+<!-- ── Zoom Modal ────────────────────────────────────────────────────────────── -->
+<div id="zoom-modal" class="hidden" onclick="if(event.target===this)closeZoom()">
+  <div id="zoom-dialog">
+    <div id="zoom-titlebar">
+      <div id="zoom-header"></div>
+      <button id="zoom-close" onclick="closeZoom()" title="Close (Esc)">✕</button>
+    </div>
+    <div id="zoom-content">
+      <button id="zoom-prev" onclick="navigateZoom(-1)" title="Previous image (←)">&#8592;</button>
+      <div id="zoom-img-wrap">
+        <img id="zoom-img" src="" alt="zoomed image">
+      </div>
+      <button id="zoom-next" onclick="navigateZoom(1)" title="Next image (→)">&#8594;</button>
+    </div>
+    <div id="zoom-footer">
+      <div id="zoom-path"></div>
+      <div id="zoom-counter"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast Container ──────────────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
